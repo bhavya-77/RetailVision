@@ -1,0 +1,62 @@
+# === GLOBAL IGNORES ===
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE/editor settings (optional but common)
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# === ASSETS ===
+
+frontend/src/assest/products/
+
+# === BACKEND (Node.js + Express) ===
+
+backend/node_modules/
+backend/.env
+
+# === FRONTEND (React + Tailwind) ===
+
+frontend/node_modules/
+frontend/build/
+frontend/coverage/
+
+# Optional React environment files
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Other React system files
+frontend/.pnp/
+frontend/.pnp.js
+frontend/.DS_Store
+
+# === TEST FILES ===
+
+# Jest / React Testing Library
+coverage/
+*.test.js
+*.test.ts
+*.spec.js
+
+# === OPTIONAL ===
+
+# If using TypeScript later
+*.tsbuildinfo
+
+# If using Next.js (just in case in future)
+.next/
+out/
+
+# If using Firebase, Docker, etc. later — add rules as needed
