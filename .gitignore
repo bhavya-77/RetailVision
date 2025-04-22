@@ -32,6 +32,7 @@ frontend/build/
 frontend/coverage/
 
 # Optional React environment files
+frontend/.env
 frontend/.env.local
 frontend/.env.development.local
 frontend/.env.test.local

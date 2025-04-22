@@ -55,7 +55,7 @@ const SignUp = () => {
             }
 
         } else{
-            console.log("Password and Confirm Password do not match")
+            toast.error("Password and Confirm Password do not match")
         }
     }
 
