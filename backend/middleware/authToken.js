@@ -5,8 +5,8 @@ async function authToken(req, res, next) {
         const token = req.cookies?.token
 
         if(!token){
-            return res.staus(200).json({
-                message: "User not logged in",
+            return res.status(200).json({
+                message: "Kindly login...",
                 error: true,
                 success: false,
             })
