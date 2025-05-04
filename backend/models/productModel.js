@@ -8,6 +8,11 @@ const productSchema = new mongoose.Schema({
     description: String,
     price: Number,
     sellingPrice: Number,
+    embeddings: {
+        type: [[Number]], // Array of arrays, because multiple images
+        default: [],
+        required: false,
+    }
 }, { timestamps: true });
 
 const productModel = mongoose.model('product', productSchema);

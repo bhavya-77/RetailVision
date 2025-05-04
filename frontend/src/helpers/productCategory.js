@@ -1,16 +1,14 @@
 const productCategory = [
-    { id : 1, label: "Airpods", value: "airpods" },
-    { id : 2, label : "Camera", value : "camera"},
-    { id : 3, label : "Earphones", value : "earphones"},
-    { id : 4, label : "Mobiles", value : "mobiles"},
-    { id : 5, label : "Mouse", value : "mouse"},
-    { id : 6, label : "Printers", value : "printers"},
-    { id : 7, label : "Processor", value : "processor"},
-    { id : 8, label : "Refrigerator", value : "refrigerator"},
-    { id : 9, label : "Speakers", value : "speakers"},
-    { id : 10, label : "Trimmers", value : "trimmers"},
-    { id : 11, label : "Televisions", value : "televisions"},
-    { id : 12, label : "Watches", value : "watches"},
+    { id : 1, label: "Accessories", value: "accessories" },
+    { id : 2, label : "Clothing", value : "clothing"},
+    { id : 3, label : "Food Items", value : "food_Items"},
+    { id : 4, label : "Footwear", value : "footwear"},
+    { id : 5, label : "Furniture", value : "furniture"},
+    { id : 6, label : "Grocery", value : "grocery"},
+    { id : 7, label : "Household Essentials", value : "household_essentials"},
+    { id : 8, label : "Lighting", value : "lighting"},
+    { id : 9, label : "Personal Care", value : "personal_care"},
+    { id : 10, label : "Stationery", value : "stationery"},
 ]
 
 export default productCategory;

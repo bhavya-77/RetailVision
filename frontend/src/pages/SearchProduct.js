@@ -1,51 +1,84 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
-import SummaryAPI from '../common'
-import VerticalCard from '../components/VerticalCard'
+// Importing necessary React hooks
+import React, { useEffect, useState } from 'react';
+
+// Importing router hook to read query from URL
+import { useLocation } from 'react-router-dom';
+
+// Importing existing API configuration
+import SummaryAPI from '../common';
+
+// Importing component to display products
+import VerticalCard from '../components/VerticalCard';
+
+// Importing helper function that is sending image URL to backend AI search API
+import searchProductByImage from '../helpers/searchProductByImage';
 
 const SearchProduct = () => {
-    const query = useLocation()
-    const [data, setData] = useState([])
-    const [loading, setLoading] = useState(true)
+    // Creating a hook to get the search query from the URL
+    const query = useLocation();
 
-    console.log("query", query.search)
+    // Creating a state that is storing the product data to display
+    const [data, setData] = useState([]);
 
-    const fetchProduct = async()=>{
-        setLoading(true)
-        const response = await fetch(SummaryAPI.searchProduct.url + query.search)
-        const dataResponse = await response.json()
-        setLoading(false)
+    // Creating a state that is tracking if loading is happening
+    const [loading, setLoading] = useState(true);
 
-        setData(dataResponse.data)
-    }
+    console.log("query", query.search);
 
+    // Defining a function that is fetching products based on text or image mode
+    const fetchProduct = async () => {
+        setLoading(true);
+
+        // Parsing the search parameters from the URL
+        const urlSearch = new URLSearchParams(query.search);
+        const queryText = urlSearch.get("q");
+        const imageLink = urlSearch.get("image");
+
+        if (imageLink) {
+            // If an image URL is found in query params, performing AI-based image search
+            const matchedProducts = await searchProductByImage(imageLink);
+            setData(matchedProducts);
+        } else if (queryText) {
+            // If text query is found, performing normal MongoDB text search
+            const response = await fetch(SummaryAPI.searchProduct.url + "?q=" + queryText);
+            const dataResponse = await response.json();
+            setData(dataResponse.data);
+        } else {
+            // If neither found, setting empty data
+            setData([]);
+        }
+
+        setLoading(false);
+    };
+
+    // Running fetchProduct whenever the search query changes
     useEffect(() => {
-        fetchProduct()
-    }, [query])
+        fetchProduct();
+    }, [query]);  // Watching only query now
 
-  return (
-    <div className='container mx-auto p-4'>
-        {
-            loading && (
-                <p className='text-lg text-center'>Loading...</p>
-            )
-        }
-        
-        <p className='text-lg font-semibold my-3'>Search Results : {data.length}</p>
+    return (
+        <div className='container mx-auto p-4'>
+            {
+                loading && (
+                    <p className='text-lg text-center'>Loading...</p>
+                )
+            }
 
-        {
-            data.length === 0 && loading === false && (
-                <p className='bg-white text-lg p-4'>No Results Found...</p>
-            )
-        }
+            <p className='text-lg font-semibold my-3'>Search Results : {data.length}</p>
 
-        {
-            data.length !== 0 && !loading && (
-                <VerticalCard loading={loading} data={data} />
-            )
-        }
-    </div>
-  )
-}
+            {
+                data.length === 0 && loading === false && (
+                    <p className='bg-white text-lg p-4'>No Results Found...</p>
+                )
+            }
 
-export default SearchProduct
+            {
+                data.length !== 0 && !loading && (
+                    <VerticalCard loading={loading} data={data} />
+                )
+            }
+        </div>
+    );
+};
+
+export default SearchProduct;
