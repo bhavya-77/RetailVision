@@ -17,7 +17,7 @@ const AdminProductCart = ({
             <div className='w-32 h-32 flex items-center justify-center rounded-full mx-auto'>
                 <img src={data?.productImage[0]} width={120} height={120} className='mx-auto object-fill h-full'/>
             </div>
-            <h1 className='text-elipsis line-clamp-2 text-center'>{data.productName}</h1>
+            <h1 className='text-elipsis line-clamp-1 text-center'>{data.productName}</h1>
 
             <div>
                 <div className='text-sm font-semibold text-center'>

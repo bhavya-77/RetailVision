@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { useContext } from 'react'
 import scrollToTop from '../helpers/scrollToTop'
 import displayCurrency from '../helpers/displayCurrency'
@@ -14,7 +16,7 @@ const VerticalCard = ({loading, data}) => {
         fetchUserAddToCart()
     }
   return (
-    <div className='grid grid-cols-[repeat(auto-fit,minmax(300px,300px))] justify-center md:justify-between md:gap-6 overflow-x-scroll scrollbar-none transition-all'>
+    <div className='grid grid-cols-[repeat(auto-fit,minmax(300px,300px))] justify-center md:justify-between md:gap-6 overflow-x-scroll scrollbar-none transition-all pr-4'>
 
         {
             loading ? (

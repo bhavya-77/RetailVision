@@ -35,12 +35,35 @@ async def search_by_image(request: ImageSearchRequest):
         with torch.no_grad():
             query_embedding = model.encode_image(image_tensor).squeeze(0).cpu().numpy().tolist()
 
-        # Searching for similar products using FAISS
-        matched_ids = search_faiss(query_embedding, top_k=5)
+        # Searching for similar products using FAISS (with scores)
+        matched_results = search_faiss(query_embedding, top_k=4, return_scores=True)
+
+        # Extract product IDs for querying MongoDB
+        matched_ids = [product_id for product_id, _ in matched_results]
 
         # Fetching product details from MongoDB
         collection = get_mongo_collection()
-        matched_products = list(collection.find({ "_id": { "$in": [ObjectId(_id) for _id in matched_ids] }}))
+
+        # Fetch all matched products from MongoDB (unordered)
+        fetched_products = list(collection.find({ "_id": { "$in": [ObjectId(_id) for _id in matched_ids] }}))
+
+        # Build a lookup map of product_id → product
+        product_map = {str(product["_id"]): product for product in fetched_products}
+
+        # Reorder according to FAISS similarity
+        matched_products = []
+        for product_id, score in matched_results:
+            product = product_map.get(product_id)
+            if product:
+                product["_id"] = product_id  # Convert ObjectId to str
+                product["similarity_score"] = round(float(score), 3)  # Add score
+                matched_products.append(product)
+
+        # Print to backend console
+        print("\nSearch Results:")
+        for product in matched_products:
+            product_name = product.get("productName", "Unnamed Product")
+            print(f"Product ID: {product['_id']} | Name: {product_name} | Similarity Score: {product['similarity_score']:.3f}")
 
         # Converting MongoDB ObjectId to string manually
         for product in matched_products:
@@ -52,4 +75,5 @@ async def search_by_image(request: ImageSearchRequest):
         }
 
     except Exception as e:
+        print(f"❌ Backend error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

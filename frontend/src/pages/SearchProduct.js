@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // Importing necessary React hooks
 import React, { useEffect, useState } from 'react';
 
@@ -17,6 +19,13 @@ const SearchProduct = () => {
     // Creating a hook to get the search query from the URL
     const query = useLocation();
 
+    // Parsing the search parameters from the URL (moved outside for wider use)
+    const urlSearch = new URLSearchParams(query.search);
+
+    // Extracting text and image search parameters
+    const queryText = urlSearch.get("q");
+    const imageLink = urlSearch.get("image");
+
     // Creating a state that is storing the product data to display
     const [data, setData] = useState([]);
 
@@ -29,10 +38,10 @@ const SearchProduct = () => {
     const fetchProduct = async () => {
         setLoading(true);
 
-        // Parsing the search parameters from the URL
-        const urlSearch = new URLSearchParams(query.search);
-        const queryText = urlSearch.get("q");
-        const imageLink = urlSearch.get("image");
+        // // Parsing the search parameters from the URL
+        // const urlSearch = new URLSearchParams(query.search);
+        // const queryText = urlSearch.get("q");
+        // const imageLink = urlSearch.get("image");
 
         if (imageLink) {
             // If an image URL is found in query params, performing AI-based image search
@@ -61,6 +70,16 @@ const SearchProduct = () => {
             {
                 loading && (
                     <p className='text-lg text-center'>Loading...</p>
+                )
+            }
+
+            {
+                // Displaying the query image if it's an image-based search
+                imageLink && (
+                    <div className="my-4">
+                        <p className='text-md font-medium mb-2'>Query Image:</p>
+                        <img src={imageLink} alt="Query" className="w-40 h-40 object-contain rounded shadow" />
+                    </div>
                 )
             }
 

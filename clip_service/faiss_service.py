@@ -33,19 +33,31 @@ def build_faiss_index():
     # Converting list of vectors into numpy array of type float32
     vectors_np = np.array(vectors).astype("float32")
 
-    # Creating a FAISS index for L2 (Euclidean) distance search
-    faiss_index = faiss.IndexFlatL2(vectors_np.shape[1])
+    # # Creating a FAISS index for L2 (Euclidean) distance search
+    # faiss_index = faiss.IndexFlatL2(vectors_np.shape[1])
+    # faiss_index.add(vectors_np)
+
+    # print(f"✅ FAISS (euclidean) index is built with {len(vectors)} vectors from {len(products)} products.")
+
+    # O - Normalizing vectors for cosine similarity
+    vectors_np /= np.linalg.norm(vectors_np, axis=1, keepdims=True)
+
+    # O - Creating a FAISS index for cosine similarity using inner product
+    faiss_index = faiss.IndexFlatIP(vectors_np.shape[1])
     faiss_index.add(vectors_np)
 
-    print(f"✅ FAISS index is built with {len(vectors)} vectors from {len(products)} products.")
+    print(f"✅ FAISS (cosine similarity) index is built with {len(vectors)} vectors from {len(products)} products.")
 
 # Creating a function that is searching the FAISS index with a given query vector
-def search_faiss(query_vector, top_k=5):
+def search_faiss(query_vector, top_k=4, return_scores=False):
     if faiss_index is None:
         raise ValueError("FAISS index is not built. Please run build_faiss_index() first.")
 
     # Making sure the query vector is 2D (batch of 1)
     query_vector_np = np.array(query_vector).astype("float32").reshape(1, -1)
+
+    # O - Normalizing the query vector for cosine similarity
+    query_vector_np /= np.linalg.norm(query_vector_np, axis=1, keepdims=True)
 
     # Performing the search
     distances, indices = faiss_index.search(query_vector_np, top_k)
@@ -53,4 +65,7 @@ def search_faiss(query_vector, top_k=5):
     # Mapping FAISS indices back to MongoDB product IDs
     result_ids = [id_map[i] for i in indices[0]]
 
-    return result_ids
+    if return_scores:
+        return list(zip(result_ids, distances[0]))
+    else:
+        return result_ids
